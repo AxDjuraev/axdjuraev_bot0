@@ -9,6 +9,8 @@ def doSomething(person):
   message = person.text
   bot.send_message(id,f'You said: {message}')
 
+id = ''
+
 while True:
   bot.send_message(id, 'bot working...')
   sleep(4)
