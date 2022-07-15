@@ -15,8 +15,9 @@ def downloadYoutubeVideo(video_link):
   file_name = streams.first().download()
   return file_name
 def sendYoutubeVideo(id, message):
-  file_name = downloadYoutubeVideo(message.split()[1])
-  bot.send_video(id, open(file_name,'rb'), caption = file_name)
+  file_full_name = downloadYoutubeVideo(message.split()[1])
+  file_name = file_full_name[file_full_name.rfind('/')+1:]
+  bot.send_video(id, open(file_full_name,'rb'), caption = file_name)
 @bot.message_handler()
 def doSomething(person):
   id = person.chat.id 
