@@ -9,7 +9,7 @@ def doSomething(person):
   message = person.text
   bot.send_message(id,f'You said: {message}')
 
-id = ''
+id = '1722229628'
 
 while True:
   bot.send_message(id, 'bot working...')
