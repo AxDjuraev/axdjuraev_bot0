@@ -10,7 +10,7 @@ bot = TeleBot(API)
 admin_id = '1722229628'
 
 def downloadYoutubeVideo(video_link):
-  youtube_video = YouTube(link)
+  youtube_video = YouTube(video_link)
   streams = youtube_video.streams.filter(res='360p', progressive="True")
   file_name = streams.first().download()
   return file_name
