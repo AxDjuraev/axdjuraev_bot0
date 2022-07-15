@@ -1,3 +1,4 @@
+
 from telebot import TeleBot
 from time import sleep
 from pytube import YouTube
@@ -9,11 +10,13 @@ bot = TeleBot(API)
 admin_id = '1722229628'
 
 def downloadYoutubeVideo(video_link):
-  youtube_video = YouTube(video_link)
+  youtube_video = YouTube(link)
   streams = youtube_video.streams.filter(res='360p', progressive="True")
   file_name = streams.first().download()
   return file_name
-
+def sendYoutubeVideo(id, message):
+  file_name = downloadYoutubeVideo(message.split()[1])
+  bot.send_video(id, open(file_name,'rb'), caption = file_name)
 @bot.message_handler()
 def doSomething(person):
   id = person.chat.id 
@@ -31,7 +34,7 @@ def doSomething(person):
     bot.send_message(id, f'error: "{str(exception)}" fix and try again.')
 
 functions = {
-  'tube': lambda id, message: bot.send_video(id, open(downloadYoutubeVideo(message.split()[1]),'rb')),
+  'tube': lambda id, message: sendYoutubeVideo(id, message),
    'help': lambda id, message: bot.send_message(id, 'welcom to group')
 }
 if __name__ == "__main__":
