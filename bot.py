@@ -1,4 +1,3 @@
-
 from telebot import TeleBot
 from time import sleep
 from pytube import YouTube
@@ -9,28 +8,31 @@ bot = TeleBot(API)
 
 admin_id = '1722229628'
 
-@bot.message_handler()
 def downloadYoutubeVideo(video_link):
   youtube_video = YouTube(link)
   streams = youtube_video.streams.filter(res='360p', progressive="True")
   file_name = streams.first().download()
   return file_name
+
+@bot.message_handler()
 def doSomething(person):
   id = person.chat.id 
   try:
     message = person.text
     strippedMessage = message.strip()
     if not strippedMessage.startswith('/'):
-      bot.send_message(id, f'function not found. Try send message "/help"')
+      bot.send_message(id, f'Try send message "/help"')
       return
     function = (strippedMessage.split(' ')[0])[1:]
-    bot.send_message(id, function)
-    
+    if not function in functions.keys():
+      bot.send_message(id, f'function not found. Try send message "/help"')
+    functions[function].__call__(id, strippedMessage)
   except Exception as exception:
-    bot.send_message(id, f'error: "{str(exception)}" and try again.')
+    bot.send_message(id, f'error: "{str(exception)}" fix and try again.')
 
 functions = {
-  ''
+  'tube': lambda id, message: bot.send_video(id, open(downloadYoutubeVideo(message.split()[1]),'rb')),
+   'help': lambda id, message: bot.send_message(id, 'welcom to group')
 }
 if __name__ == "__main__":
   bot.polling()
