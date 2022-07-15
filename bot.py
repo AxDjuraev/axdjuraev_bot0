@@ -13,5 +13,5 @@ id = '1722229628'
 
 while True:
   bot.send_message(id, 'bot working...')
-  sleep(4)
+  sleep(6)
 # bot.polling()
