@@ -2,10 +2,14 @@
 from telebot import TeleBot
 from time import sleep
 from pytube import YouTube
-# from selenium import webdriver
+from selenium import webdriver
 # from webdriver_manager.chrome import ChromeDriverManager
 
 # driver = webdriver.Chrome(ChromeDriverManager().install())
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
 
 API = '5306057698:AAFtg7O014soJoSreLDUXYZEOEN_liKTGwk'
 bot = TeleBot(API)
