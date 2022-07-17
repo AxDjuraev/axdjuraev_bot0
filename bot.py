@@ -12,7 +12,7 @@ def getPageSource(url):
   chrome_options.add_argument('--headless')
   chrome_options.add_argument('--no-sandbox')
   chrome_options.add_argument('--disable-dev-shm-usage')
-  wd = webdriver.Chrome(executable_path=os.environ.get(""))
+  wd = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"))
 
 API = '5306057698:AAFtg7O014soJoSreLDUXYZEOEN_liKTGwk'
 bot = TeleBot(API)
