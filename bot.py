@@ -3,9 +3,9 @@ from telebot import TeleBot
 from time import sleep
 from pytube import YouTube
 from selenium import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
+# from webdriver_manager.chrome import ChromeDriverManager
 
-driver = webdriver.Chrome(ChromeDriverManager().install())
+# driver = webdriver.Chrome(ChromeDriverManager().install())
 
 API = '5306057698:AAFtg7O014soJoSreLDUXYZEOEN_liKTGwk'
 bot = TeleBot(API)
