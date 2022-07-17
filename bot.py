@@ -22,6 +22,7 @@ def getPageSource(url):
   chrome_options.add_argument('--disable-dev-shm-usage')
   wd = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=chrome_options)
   wd.get(url)
+  sleep(2)
   page_source = wd.page_source
   wd.close()
   return page_source
