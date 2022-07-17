@@ -51,12 +51,15 @@ def getNumbersWithSources(page_source):
 
 def sendNums(id, message):
   countries = getCountries()
-  if message.split() < 1:
+  if len(message.split()) < 2:
     bot.send_message(id, ' \n'.join(countries.keys()))
     return
   country = message.split()[1].lower()
-  page_source = getPageSource(active_numbers_website_domain+countries[country])
-  
+  url = f'{active_numbers_website_domain}/{countries[country]}'
+  page_source = getPageSource(url)
+  numbers = getNumbersWithSources(page_source)
+  bot.send_message(id, ' \n'.join(numbers.keys()))
+    
 
 def downloadYoutubeVideo(video_link):
   youtube_video = YouTube(video_link)
