@@ -2,7 +2,7 @@
 from telebot import TeleBot
 from time import sleep
 from pytube import YouTube
-from selenium import webdriver
+# from selenium import webdriver
 # from webdriver_manager.chrome import ChromeDriverManager
 
 # driver = webdriver.Chrome(ChromeDriverManager().install())
