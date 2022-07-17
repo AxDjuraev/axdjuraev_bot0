@@ -40,11 +40,22 @@ def getCountries():
     countries[name.lower()] = link
   return countries
 
+def getNumbersWithSources(page_source):
+  numbers = {}
+  soup = BeautifulSoup(page_source)
+  div_content = soup.find_all('div',{'id': 'other-numbers'})[0]
+  nums = div_content.find_all('a')
+  for number in nums:
+    numbers[number.text] = number["href"]
+  return numbers
+
 def sendNums(id, message):
   countries = getCountries()
   if message.split() < 1:
-    bot.send_message(id, ' \n'.join(countries.keys())
+    bot.send_message(id, ' \n'.join(countries.keys()))
     return
+  country = message.split()[1].lower()
+  page_source = getPageSource(active_numbers_website_domain+countries[country])
   
 
 def downloadYoutubeVideo(video_link):
