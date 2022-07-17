@@ -3,11 +3,14 @@ from telebot import TeleBot
 from time import sleep
 from pytube import YouTube
 from selenium import webdriver
+from bs4 import BeautifulSoup
 
 API = '5306057698:AAFtg7O014soJoSreLDUXYZEOEN_liKTGwk'
 bot = TeleBot(API)
 
 admin_id = '1722229628'
+
+active_numbers_website_domain = 'https://www.number4sms.com'
 
 def getPageSource(url):
   chrome_options = webdriver.ChromeOptions()
@@ -26,6 +29,23 @@ def sendPage(id, message):
   with open('1.html','w') as f:
     f.write(getPageSource(url))
   bot.send_document(id, open('1.html','r'))
+
+def getCountries():
+  countries = {}
+  page_source = getPageSource(active_numbers_website_domain)
+  soup = BeautifulSoup(page_source)
+  for country in soup.find_all('div',{'class': 'col-md-3 col-12 text-center number-grid-element'}):
+    link = country.find_all('a')[0]['href']
+    name = country.find_all('p')[0].text
+    countries[name.lower()] = link
+  return countries
+
+def sendNums(id, message):
+  countries = getCountries()
+  if message.split() < 1:
+    bot.send_message(id, ' \n'.join(countries.keys())
+    return
+  
 
 def downloadYoutubeVideo(video_link):
   youtube_video = YouTube(video_link)
@@ -48,6 +68,7 @@ def doSomething(person):
     function = (strippedMessage.split(' ')[0])[1:]
     if not function in functions.keys():
       bot.send_message(id, f'function not found. Try send message "/help"')
+      return
     functions[function].__call__(id, strippedMessage)
   except Exception as exception:
     bot.send_message(id, f'error: "{str(exception)}" fix and try again.')
@@ -55,7 +76,8 @@ def doSomething(person):
 functions = {
   'tube': lambda id, message: sendYoutubeVideo(id, message),
    'help': lambda id, message: bot.send_message(id, 'welcom to group'),
-   'page': lambda id, message: sendPage(id, message)
+   'page': lambda id, message: sendPage(id, message),
+   'nums': lambda id, message: sendNums(id, message)
 }
 if __name__ == "__main__":
   bot.polling()
