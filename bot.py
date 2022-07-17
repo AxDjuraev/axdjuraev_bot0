@@ -121,6 +121,7 @@ def doSomething(person):
     bot.send_message(id, f'error: "{str(exception)}" fix and try again.')
 
 def sendLastMessage(id, message):
+  global last_entered_number
   answer = ''
   if len(message.split()) < 2:
     if last_entered_number.strip() == '': 
@@ -131,11 +132,7 @@ def sendLastMessage(id, message):
   last_messages = getLastMessages(number)
   answer += f'number: {number}'
   for message in last_messages:
-    answer += f'''
-      from: {message["from"]}
-      text: {message["text"]}
-      date: {message["date"]}
-    '''
+    answer += f'from: {message["from"]}\ntext: {message["text"]}\ndate: {message["date"]}'
   bot.send_message(id, answer)
   last_entered_number = number 
 
