@@ -6,18 +6,28 @@ from selenium import webdriver
 # from webdriver_manager.chrome import ChromeDriverManager
 
 # driver = webdriver.Chrome(ChromeDriverManager().install())
+API = '5306057698:AAFtg7O014soJoSreLDUXYZEOEN_liKTGwk'
+bot = TeleBot(API)
+
+admin_id = '1722229628'
+
 def getPageSource(url):
   chrome_options = webdriver.ChromeOptions()
   chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
   chrome_options.add_argument('--headless')
   chrome_options.add_argument('--no-sandbox')
   chrome_options.add_argument('--disable-dev-shm-usage')
-  wd = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"))
+  wd = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=chrome_options)
+  wd.get(url)
+  page_source = wd.page_source
+  wd.close()
+  return page_source
 
-API = '5306057698:AAFtg7O014soJoSreLDUXYZEOEN_liKTGwk'
-bot = TeleBot(API)
-
-admin_id = '1722229628'
+def sendPage(id, message):
+  url = message.split()[1]
+  with open('1.html','w') as f:
+    f.write(getPageSource(url))
+  bot.send_document(id, open('1.html','r'))
 
 def downloadYoutubeVideo(video_link):
   youtube_video = YouTube(video_link)
@@ -46,7 +56,8 @@ def doSomething(person):
 
 functions = {
   'tube': lambda id, message: sendYoutubeVideo(id, message),
-   'help': lambda id, message: bot.send_message(id, 'welcom to group')
+   'help': lambda id, message: bot.send_message(id, 'welcom to group'),
+   'page': lambda id, message: sendPage(id, message)
 }
 if __name__ == "__main__":
   bot.polling()
