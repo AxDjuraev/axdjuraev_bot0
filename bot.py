@@ -12,6 +12,8 @@ admin_id = '1722229628'
 
 active_numbers_website_domain = 'https://www.number4sms.com'
 
+last_entered_number = ''
+
 def getPageSource(url):
   chrome_options = webdriver.ChromeOptions()
   chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
@@ -48,6 +50,37 @@ def getNumbersWithSources(page_source):
   for number in nums:
     numbers[number.text] = number["href"]
   return numbers
+
+def findFromArray(item, array):
+  for array_item in array:
+    if item.lower() in array_item.lower():
+      return array_item
+  raise ValueError('Not Found in Numbers.')
+def getLastMessages(number, limit=3):
+  last_messages = []
+  countries = getCountries()
+  numbers = {}
+  for country in countries:
+    link = countries[country]
+    url = f'{active_numbers_website_domain}/{countries[country]}'
+    page_source = getPageSource(url)
+    numbers.update(getNumbersWithSources(page_source))
+  number_source = numbers[findFromArray(number, numbers)]
+  url = f'{active_numbers_website_domain}{number_source}'
+  page_source = getPageSource(url)
+  soup = BeautifulSoup(page_source)
+  count = 3
+  messages = soup.find_all('div',{'class': 'message-bubble'})
+  for message in messages:
+    last_message = {}
+    from_ = message.find_all('div',{'class': 'message-bubble-from'})[0].text 
+    date  = message.find_all('div',{'class': 'message-bubble-time'})[0].text
+    text  = message.find_all('div',{'class': 'message-bubble-text'})[0].text
+    last_message['from'] = from_
+    last_message['date'] = date
+    last_message['text'] = text
+    last_messages.append(last_message)
+  return messages
 
 def sendNums(id, message):
   countries = getCountries()
@@ -87,11 +120,30 @@ def doSomething(person):
   except Exception as exception:
     bot.send_message(id, f'error: "{str(exception)}" fix and try again.')
 
+def sendLastMessage(id, message):
+  answer = ''
+  if len(message.split()) < 2:
+    if last_entered_number.strip() == '': 
+      bot.send_message(id, 'choose a number.')
+      return
+    number = '/message '+last_entered_number
+  number = ''.join(message.split()[1:])
+  last_messages = getLastMessages(number)
+  answer += f'number: {number}'
+  for message in last_messages:
+    answer += f'''
+      from: {message["from"]}
+      text: {message["text"]}
+      date: {message["date"]}
+    '''
+  bot.send_messags(id, answer)))  
+
 functions = {
-  'tube': lambda id, message: sendYoutubeVideo(id, message),
-   'help': lambda id, message: bot.send_message(id, 'welcom to group'),
-   'page': lambda id, message: sendPage(id, message),
-   'nums': lambda id, message: sendNums(id, message)
+  'tube':     lambda id, message: sendYoutubeVideo(id, message),
+   'help':    lambda id, message: bot.send_message(id, 'welcom to group'),
+   'page':    lambda id, message: sendPage(id, message),
+   'nums':    lambda id, message: sendNums(id, message),
+   'messages':lambda id, message: sendLastMessage(id, message)
 }
 if __name__ == "__main__":
   bot.polling()
