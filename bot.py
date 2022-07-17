@@ -136,7 +136,7 @@ def sendLastMessage(id, message):
       text: {message["text"]}
       date: {message["date"]}
     '''
-  bot.send_messags(id, answer)))  
+  bot.send_messags(id, answer) 
 
 functions = {
   'tube':     lambda id, message: sendYoutubeVideo(id, message),
