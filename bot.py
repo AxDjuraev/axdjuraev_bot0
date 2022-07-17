@@ -130,7 +130,7 @@ def sendLastMessage(id, message):
     number = '/message '+last_entered_number
   number = ''.join(message.split()[1:])
   last_messages = getLastMessages(number)
-  answer += f'number: {number}'
+  # answer += f'number: {number}'
   for message in last_messages:
     answer += f'from: {message["from"]}\ntext: {message["text"]}\ndate: {message["date"]}'
   bot.send_message(id, answer)
